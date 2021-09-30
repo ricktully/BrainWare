@@ -40,6 +40,7 @@ Change the AttachDbFile name to the full path of the BrainWare.mdf file (located
 - Expected a browser is open with the result of the first order
 
 ### Refactor Changes
-- Converted project to ASP Core 3.1
+- set MVC project to sartup project
+- Converted project to ASP Core 3.1 and took advantage of dependency injection
 - Added EF Core to take advantage of functionaity including migration tracking
 - IMplemented Unit Of WOrk / Repo pattern to keep queries within same transaction and to allow a point of implemtation for pagination
