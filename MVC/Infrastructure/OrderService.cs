@@ -7,24 +7,37 @@ namespace MVC.Infrastructure
 {
     using Microsoft.EntityFrameworkCore;
     using MVC.DAL;
+    using MVC.DAL.UOW;
     using System.Data;
 
     public class OrderService:IOrderService
     {
-        private BrainwareContext context;
+        //private BrainwareContext context;
+        private IUnitOfWork unit;
 
-        public OrderService(BrainwareContext context) {
-            this.context = context;
+        public OrderService() {
+
+        }
+
+        public void setUnitOfWork(IUnitOfWork unit)
+        {
+            this.unit = unit;
         }
 
         public async System.Threading.Tasks.Task<List<MVC.DAL.OrderDto>> GetOrdersForCompanyAsync(int CompanyId)
         {
+            if (unit == null)
+            {
+                throw new Exception("Service not configured. Check UnitOfWork");
+            }
             // Get the orders for company
-            var company = await context.Companies
-                .Include(x=>x.Orders)
-                .ThenInclude(x => x.Orderproducts)
-                .ThenInclude(x => x.Product)
-                .Where(x=>x.CompanyId==CompanyId).FirstOrDefaultAsync();
+            Company company =await unit.CompanyRepository.GetFullyLoadedByIdAsync(CompanyId);
+            
+            //var company = await context.Companies
+            //    .Include(x=>x.Orders)
+            //    .ThenInclude(x => x.Orderproducts)
+            //    .ThenInclude(x => x.Product)
+            //    .Where(x=>x.CompanyId==CompanyId).FirstOrDefaultAsync();
 
             //calculate order total for each ompany order
             var orders = company.Orders;
@@ -41,7 +54,7 @@ namespace MVC.Infrastructure
                     CompanyName = company.Name,
                     Description =order.Description,
                     OrderId=order.OrderId,
-                    OrderProducts= (List<MVC.DAL.Orderproduct>)order.Orderproducts
+                    OrderProducts= order.Orderproducts
                 };
 
                 orderDtos.Add(orderDto);

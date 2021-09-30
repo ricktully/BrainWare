@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MVC.DAL.UOW;
+using MVC.Infrastructure;
 using MVC.Models;
 using System;
 using System.Collections.Generic;
@@ -12,15 +14,27 @@ namespace MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private IOrderService orderService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IUnitOfWork unitOfWork,IOrderService orderService,ILogger<HomeController> logger)
         {
             _logger = logger;
+            this.orderService = orderService;
+            this.orderService.setUnitOfWork(unitOfWork);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<MVC.DAL.OrderDto> orders = null;
+            try
+            {
+                orders = await this.orderService.GetOrdersForCompanyAsync(1);
+            }catch(Exception ex)
+            {
+                _logger.LogError("Error getting orders for company 1",ex);
+                throw ex;
+            }
+            return View(orders);
         }
 
         public IActionResult Privacy()

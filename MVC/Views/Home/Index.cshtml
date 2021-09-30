@@ -1,8 +1,29 @@
 ﻿@{
+    @model List<MVC.DAL.OrderDto>;
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="jumbotron">
+    <h1>BrainWare Orders</h1>
+    <p class="lead">This is the BrainWare orders page! Welcome</p>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Your Orders</h2>
+        <div id="orders"></div>
+    </div>
+</div>
+
+<ul>
+    @foreach (var order in Model)
+    {
+        <li>@(order.Description + $" (Total: ${order.OrderTotal})")</li>
+
+        <ul>
+            @foreach (var orderProduct in order.OrderProducts)
+            {
+                <li>@(orderProduct.Product.Name + $" ({orderProduct.Quantity}  ${orderProduct.Price})")</li>
+            }
+        </ul>
+    }
+</ul>

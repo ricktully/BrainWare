@@ -10,6 +10,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MVC.DAL;
+using MVC.Infrastructure;
+using MVC.DAL.UOW;
+using Microsoft.Extensions.Logging;
 
 namespace MVC
 {
@@ -38,6 +41,14 @@ namespace MVC
                 ));
             }, contextLifetime: ServiceLifetime.Transient, optionsLifetime: ServiceLifetime
             .Transient);
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddTransient<IOrderService, OrderService>();
+
+            
+
+            services.AddRazorPages();
 
             services.AddControllersWithViews();
         }

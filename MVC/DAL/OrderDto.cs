@@ -18,7 +18,7 @@ namespace MVC.DAL
 
         public decimal OrderTotal { get; set; }
 
-        public List<Orderproduct> OrderProducts { get; set; }
+        public ICollection<Orderproduct> OrderProducts { get; set; }
 
     }
 
